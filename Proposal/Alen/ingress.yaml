@@ -1,0 +1,99 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: notification-platform-ingress-def
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/scheme: internet-facing
+  namespace: notification
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /messageconsumer
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: messageconsumer
+            port:
+              number: 8081
+      - path: /notificationapi
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: notificationapi
+            port:
+              number: 8080
+      - path: /notificationbatch
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: notificationbatch
+            port:
+              number: 8082
+      - path: /notificationlistener
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: notificationlistener
+            port:
+              number: 8083
+      - path: /notificationmanager
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: notificationmanager
+            port:
+              number: 8085
+root@ip-172-31-8-147:~# vim ingress-ns.yaml 
+root@ip-172-31-8-147:~# vim ingress-ns.yaml 
+root@ip-172-31-8-147:~# cat ingress-ns.yaml 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: notification-platform-ingress-def
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/scheme: internet-facing
+  namespace: notification
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /messageconsumer
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: messageconsumer
+            port:
+              number: 8081
+      - path: /notificationapi
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: notificationapi
+            port:
+              number: 8080
+      - path: /notificationbatch
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: notificationbatch
+            port:
+              number: 8082
+      - path: /notificationlistener
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: notificationlistener
+            port:
+              number: 8083
+      - path: /notificationmanager
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: notificationmanager
+            port:
+              number: 8085

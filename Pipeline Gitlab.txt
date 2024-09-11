@@ -1,0 +1,59 @@
+
+
+sudo cp -R ./* /home/azureuser/java-maven
+
+
+# Use the official Maven Docker image with JDK
+image: maven:3.8.3-jdk-11
+
+# Define the stages for the CI/CD pipeline
+stages:
+  - build
+
+# Job: Build the Java project using Maven
+build:
+  stage: build
+  script:
+    - mvn package
+  artifacts:
+    paths:
+      - /home/azureuser/Devops/
+# The directory where Maven outputs the build artifacts
+
+
+target/my-app-1.0-SNAPSHOT.jar
+
+stages:
+- build
+- deploy
+
+build-java-project:
+stage: build
+script:
+- mvn package
+artifacts:
+paths:
+- target/my-app-1.0-SNAPSHOT.jar
+
+deploy-to-server:
+stage: deploy
+script:
+- echo "Deploying the application to the server..."
+- apt-get update -qy # Update package lists (if using Debian-based image)
+- apt-get install -y openssh-client # Install SSH client (if not available)
+- ssh $SSH_USER@$EC2_IPADDRESS "mkdir -p /path/to/destination" # Create destination directory (if not exists)
+- scp target/my-app-1.0-SNAPSHOT.jar azureuser@20.219.109.26:/path/to/destination # Copy the JAR file to the server
+
+
+Deploy: 
+  stage: deploy
+  before_script:
+  - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )' 
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan $EC2_IPADDRESS >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  script:
+    - scp -o StrictHostKeyChecking=no /home/gitlab-runner/builds/d1Qcnb9E/0/devopshint/tomcat-maven/target/tomcat-maven-0.0.1-SNAPSHOT.jar ubuntu@3.108.66.143:/opt/tomcat/webapps

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notificationmanager
+  namespace: notification
+  labels:
+    app: notificationmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notificationmanager
+  template:
+    metadata:
+      labels:
+        app: notificationmanager
+    spec:
+      containers:
+      - name: notificationmanager
+        image: 811095632387.dkr.ecr.us-east-2.amazonaws.com/notificationmanager:main
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  namespace: notification
+  name: notificationmanager
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: notificationmanager
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: notification
+  name: notificationmanager
+spec:
+  type: NodePort
+  selector:
+    app: notificationmanager
+  ports:
+    - name: notificationmanager
+      port: 8080
+      targetPort: 8080
